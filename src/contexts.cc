@@ -40,26 +40,26 @@ namespace octetos::cobani
 		    msg +=  "\n";
 		}
 		SDL_Texture* text_texture;
-		text_texture = SDL_CreateTextureFromSurface( m_renderer, text );
+		text_texture = SDL_CreateTextureFromSurface( renderer, text );
 		SDL_Rect dest = { 0, text->h / 2, text->w / 2, text->h /3 };
-		SDL_RenderCopy( m_renderer, text_texture, NULL, &dest );
+		SDL_RenderCopy( renderer, text_texture, NULL, &dest );
 		SDL_DestroyTexture( text_texture );
 		SDL_FreeSurface( text );
 		TTF_CloseFont(font);
 	}
 	void Test::displayPregress2()
 	{
-		SDL_SetRenderDrawColor( m_renderer, 0, 0, 0, 255 );
-		SDL_RenderClear( m_renderer );
+		SDL_SetRenderDrawColor( renderer, 0, 0, 0, 255 );
+		SDL_RenderClear( renderer );
 	}
 	void Test::displayPregress()
 	{
 		// Clear the window with a black background
-		SDL_SetRenderDrawColor( m_renderer, 0, 0, 0, 255 );
-		SDL_RenderClear( m_renderer );
+		SDL_SetRenderDrawColor( renderer, 0, 0, 0, 255 );
+		SDL_RenderClear( renderer );
 
 		// Show the window
-		SDL_RenderPresent( m_renderer );
+		SDL_RenderPresent( renderer );
 
 		int rgb[] = { 203, 203, 203, // Gray
 		              254, 254,  31, // Yellow
@@ -77,9 +77,9 @@ namespace octetos::cobani
 		// Render a new color bar every 0.5 seconds
 		for ( int i = 0; i != sizeof rgb / sizeof *rgb; i += 3, colorBar.x += 90 )
 		{
-		    SDL_SetRenderDrawColor( m_renderer, rgb[i], rgb[i + 1], rgb[i + 2], 255 );
-		    SDL_RenderFillRect( m_renderer, &colorBar );
-		    SDL_RenderPresent( m_renderer );
+		    SDL_SetRenderDrawColor( renderer, rgb[i], rgb[i + 1], rgb[i + 2], 255 );
+		    SDL_RenderFillRect( renderer, &colorBar );
+		    SDL_RenderPresent( renderer );
 		    displayLoading();
 		    SDL_Delay( 500 );
 		}
@@ -106,7 +106,7 @@ namespace octetos::cobani
 		math::Point<int> O(0,0);
 		circle.set(O,30);
 	}
-    Test::Test(Uint32 flags) : Context(flags)
+    Test::Test(Uint32 flags) : Screen(flags)
 	{
 		math::Point<int> O(0,0);
 		circle.set(O,30);

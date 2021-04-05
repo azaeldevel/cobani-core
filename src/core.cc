@@ -96,7 +96,7 @@ namespace octetos::cobani
 	//getter
 	
 	//funtions
-	void Rectangle::draw(Context& context)
+	void Rectangle::draw(Screen& context)
 	{
 		int ret = SDL_RenderDrawRect(context.getRenderer(),this);
 		if(ret < 0)
@@ -153,7 +153,7 @@ namespace octetos::cobani
 		radiusY = ry;		
 	}
 	//funtions
-	void Ellipse::draw(Context& context)
+	void Ellipse::draw(Screen& context)
 	{
 		OCTETOS_MATH_INTEGER x0 = center[0];
 		OCTETOS_MATH_INTEGER y0 = center[1];
@@ -235,7 +235,7 @@ namespace octetos::cobani
 	}
 	
 	//funtions
-	void Circle::draw(Context& context)
+	void Circle::draw(Screen& context)
 	{
 		SDL_Renderer * renderer = context.getRenderer();
 		OCTETOS_MATH_INTEGER centreX = context.convX(pointcenter[0]);
@@ -319,7 +319,7 @@ namespace octetos::cobani
 	}
 	
 	//funtions
-	void Line::draw(Context& context)
+	void Line::draw(Screen& context)
 	{
 		SDL_RenderDrawLine(context.getRenderer(), origin[0], origin[1], end[0], end[1]);
 	}
@@ -341,36 +341,36 @@ namespace octetos::cobani
 
 
 
-Context::Context()
+Screen::Screen()
 {
     init(SDL_INIT_EVERYTHING);
 	cleanBackgraund();
 	media();
 }
-Context::Context(Uint32 flags)
+Screen::Screen(Uint32 flags)
 {
     init(flags);
 	cleanBackgraund();
 	media();
 }
-Context::~Context()
+Screen::~Screen()
 {
-    SDL_DestroyWindow( m_window );
-    SDL_DestroyRenderer( m_renderer );
+    SDL_DestroyWindow( window );
+    SDL_DestroyRenderer( renderer );
     SDL_Quit();
 }
 
 
 //getter
-SDL_Renderer* Context::getRenderer()const
+SDL_Renderer* Screen::getRenderer()const
 {
-    return m_renderer;
+    return renderer;
 }
 
 //funtions
-void Context::init(Uint32 flags)
+void Screen::init(Uint32 flags)
 {
-    if ( SDL_Init( flags ) != 0 )
+    if ( SDL_Init( flags ) < 0 )
     {
         throw core::Exception(__FILE__,__LINE__,"Fallo la inicializacion de la venta.");
     }
@@ -381,34 +381,44 @@ void Context::init(Uint32 flags)
         msg +=  "\n";
         throw core::Exception(__FILE__,__LINE__,msg);
     }
-    if ( SDL_CreateWindowAndRenderer( 640, 480, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE, &m_window, &m_renderer ) != 0 )
-    {
-        throw core::Exception(__FILE__,__LINE__,"Renderizacion fallida.");
+	createScreen();
+}
+void Screen::createScreen()
+{
+	window = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_SHOWN );
+	if(!window)
+	{
+        throw core::Exception(__FILE__,__LINE__,"Creatign  winodows fail.");
+    }
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
+	if(!renderer)
+	{
+        throw core::Exception(__FILE__,__LINE__,"Creatign  redender fail.");
     }
 }
-void Context::cleanBackgraund(const Color& color)
+void Screen::cleanBackgraund(const Color& color)
 {
-	SDL_SetRenderDrawColor( m_renderer, color.r, color.g, color.b, color.a );
-	SDL_RenderClear(m_renderer);
-    SDL_RenderPresent(m_renderer);
+	SDL_SetRenderDrawColor( renderer, color.r, color.g, color.b, color.a );
+	SDL_RenderClear(renderer);
+    SDL_RenderPresent(renderer);
 }
-int Context::setRenderDrawColor(const Color& color)
+int Screen::setRenderDrawColor(const Color& color)
 {
-	return SDL_SetRenderDrawColor( m_renderer, color.r, color.g, color.b, color.a );
+	return SDL_SetRenderDrawColor( renderer, color.r, color.g, color.b, color.a );
 }
 
 
-void Context::getWindowSize(int& w, int&h)
+void Screen::getWindowSize(int& w, int&h)
 {
-	SDL_GetWindowSize(m_window,&w,&h);
+	SDL_GetWindowSize(window,&w,&h);
 }
-void Context::renderPresent()
+void Screen::renderPresent()
 {
-	SDL_RenderPresent(m_renderer);
+	SDL_RenderPresent(renderer);
 }
-void Context::cleanRender()
+void Screen::cleanRender()
 {
-	int ret = SDL_RenderClear(m_renderer);
+	int ret = SDL_RenderClear(renderer);
 	if(ret < 0)
 	{
 		std::string msg = "Fallo al limpiar el ahre de renderizado : ";
@@ -416,20 +426,20 @@ void Context::cleanRender()
 		throw octetos::core::Exception(msg,__FILE__,__LINE__);
 	}
 }
-void Context::setWindowSize(int w,int h)
+void Screen::setWindowSize(int w,int h)
 {
-	SDL_SetWindowSize(m_window,w,h);
+	SDL_SetWindowSize(window,w,h);
 }
-int Context::convX(int v)
+int Screen::convX(int v)
 {
 	return v + mediaX;
 }
 
-int Context::convY(int v)
+int Screen::convY(int v)
 {
 	return (-1 * v) + mediaY;
 }
-void Context::media()
+void Screen::media()
 {
 	int w,h;
 	getWindowSize(w,h);

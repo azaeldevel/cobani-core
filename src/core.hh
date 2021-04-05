@@ -8,14 +8,14 @@
 #include <map>
 #include <exception>
 #include <octetos/core/Object.hh>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
+#include <SDL.h>
+#include <SDL_ttf.h>
 #include <octetos/math/Vector.hh>
 
 
 namespace octetos::cobani
 {
-class Context;
+class Screen;
 
 
 class DECLSPCE_DLL Color : public SDL_Color
@@ -59,7 +59,7 @@ namespace colors
 
 class DECLSPCE_DLL Drawable
 {
-	virtual void draw(Context&) = 0;
+	virtual void draw(Screen&) = 0;
 };
 
 
@@ -83,7 +83,7 @@ public:
 	void set(const math::Point<int>& origin, const math::Point<int>& end);
 	
 	//funtions
-	virtual void draw(Context& context);
+	virtual void draw(Screen& context);
 private:
 	math::Point<int> origin;
 	math::Point<int> end;
@@ -102,7 +102,7 @@ public:
 	void set(const math::Point<int>& center, OCTETOS_MATH_INTEGER radius);
 	
 	//funtions
-	virtual void draw(Context& context);
+	virtual void draw(Screen& context);
 	void move(const math::Vector<int>& v);
 
 private:
@@ -125,7 +125,7 @@ public:
 	void set(const math::Point<int>& center,OCTETOS_MATH_DECIMAL radiusX,OCTETOS_MATH_DECIMAL radiusY);
 
 	//funtions
-	virtual void draw(Context& context);
+	virtual void draw(Screen& context);
 private:
 	math::Point<int> center;
 	OCTETOS_MATH_DECIMAL radiusX;
@@ -146,7 +146,7 @@ public:
 	Rectangle(const math::Point<int>& origin, OCTETOS_MATH_INTEGER width);
 	
 	//functions
-	virtual void draw(Context& context);
+	virtual void draw(Screen& context);
 	virtual void center();
 };
 
@@ -162,13 +162,13 @@ private:
 	math::Point<int> v3;
 };
 
-class DECLSPCE_DLL Context
+class DECLSPCE_DLL Screen
 {
 public:
 	//contructors
-    Context();
-    Context(Uint32 flags);
-    virtual ~Context();
+    Screen();
+    Screen(Uint32 flags);
+    virtual ~Screen();
 	
     //getter
     SDL_Renderer* getRenderer()const;
@@ -187,10 +187,11 @@ public:
 	void setWindowSize(int width,int height);
 	int convX(int v);
 	int convY(int v);
+	void createScreen();
 
 protected:
-    SDL_Window * m_window;
-    SDL_Renderer * m_renderer;
+    SDL_Window *window;
+    SDL_Renderer *renderer;
 	int mediaX;
 	int mediaY;
 

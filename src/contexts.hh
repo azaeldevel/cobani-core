@@ -12,7 +12,7 @@ namespace octetos::cobani
 
 
 
-class DECLSPCE_DLL Test : public Context
+class DECLSPCE_DLL Test : public Screen
 {
 public:
 	//contructors
@@ -30,18 +30,18 @@ private:
 	Circle circle;
 };
 
-class DECLSPCE_DLL Room : public Context
+class DECLSPCE_DLL Room : public Screen
 {
 
 };
 
-class DECLSPCE_DLL School : public Context
+class DECLSPCE_DLL School : public Screen
 {
 
 
 };
 
-class DECLSPCE_DLL Social : public Context
+class DECLSPCE_DLL Social : public Screen
 {
 
 };

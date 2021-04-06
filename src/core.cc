@@ -7,8 +7,6 @@
 namespace octetos::cobani
 {
 
-
-
 	//contructos
 	Color::Color()
 	{
@@ -64,6 +62,36 @@ namespace octetos::cobani
 		a = alpha;
 	}
 
+
+
+
+
+
+
+
+	
+
+	Shape::Shape()
+	{
+	}
+	Shape::Shape(const math::Vector<int>& o)
+	{
+		origin = o;
+	}
+	void Shape::move(const math::Vector<int>& v)
+	{
+		origin = v;
+	}
+	void Shape::translate(const math::Vector<int>& v)
+	{
+		origin.translate(v);
+	}
+
+
+
+
+
+
 	
 
 
@@ -71,26 +99,30 @@ namespace octetos::cobani
 
 	Rectangle::Rectangle()
 	{}
-	Rectangle::Rectangle(OCTETOS_MATH_INTEGER x, OCTETOS_MATH_INTEGER y , OCTETOS_MATH_INTEGER width, OCTETOS_MATH_INTEGER height)
+	Rectangle::Rectangle(int x, int y , int width, int height)
 	{
 		this->x = x;
 		this->y = y;
 		w = width;
 		h = height;
 	}
-	Rectangle::Rectangle(const math::Point<int>& origin, OCTETOS_MATH_INTEGER width, OCTETOS_MATH_INTEGER height)
+	Rectangle::Rectangle(const math::Vector<int>& origin, int width, int height)
 	{
 		x = origin[0];
 		y = origin[1];
 		w = width;
 		h = height;
 	}
-	Rectangle::Rectangle(const math::Point<int>& origin, OCTETOS_MATH_INTEGER width)
+	Rectangle::Rectangle(const math::Vector<int>& origin, int width)
 	{
 		x = origin[0];
 		y = origin[1];
 		w = width;
 		h = width;
+	}
+	Rectangle::Rectangle(const SDL_Rect& r) : SDL_Rect(r)
+	{
+
 	}
 
 	//getter
@@ -114,7 +146,16 @@ namespace octetos::cobani
 		y = y - h/2;
 #endif
 	}
-
+	void Rectangle::move(const math::Vector<int>& v)
+	{
+		x = v[0];
+		y = v[1];
+	}
+	void Rectangle::translate(const math::Vector<int>& v)
+	{
+		x += v[0];
+		y += v[1];
+	}
 
 
 
@@ -124,39 +165,39 @@ namespace octetos::cobani
 	Ellipse::Ellipse()
 	{
 	}
-	Ellipse::Ellipse(const math::Point<int>& c,OCTETOS_MATH_DECIMAL rx,OCTETOS_MATH_DECIMAL ry)
+	Ellipse::Ellipse(const math::Point<int>& c,int rx,int ry) : Shape(c)
 	{
-		center = c;
+		//center = c;
 		radiusX = rx;
 		radiusY = ry;
 	}
 
 	//getter	
-	const math::Point<int>& Ellipse::getCenter()const
+	const math::Vector<int>& Ellipse::getCenter()const
 	{
-		return center;
+		return origin;
 	}
-	OCTETOS_MATH_DECIMAL Ellipse::getRadiusX()const
+	int Ellipse::getRadiusX()const
 	{
 		return radiusX;
 	}
-	OCTETOS_MATH_DECIMAL Ellipse::getRadiusY()const
+	int Ellipse::getRadiusY()const
 	{
 		return radiusY;
 	}
 
 	//setter	
-	void Ellipse::set(const math::Point<int>& c,OCTETOS_MATH_DECIMAL rx,OCTETOS_MATH_DECIMAL ry)
+	void Ellipse::set(const math::Vector<int>& c,int rx,int ry)
 	{
-		center = c;
+		origin = c;
 		radiusX = rx;
 		radiusY = ry;		
 	}
 	//funtions
 	void Ellipse::draw(Screen& context)
 	{
-		OCTETOS_MATH_INTEGER x0 = center[0];
-		OCTETOS_MATH_INTEGER y0 = center[1];
+		OCTETOS_MATH_INTEGER x0 = origin[0];
+		OCTETOS_MATH_INTEGER y0 = origin[1];
 		SDL_Renderer* r = context.getRenderer ();
 		float pi  = 3.14159265358979323846264338327950288419716939937510;
 		float pih = pi / 2.0; //half of pi
@@ -218,18 +259,17 @@ namespace octetos::cobani
 	{
 
 	}
-	Circle::Circle(const math::Point<int>& c,OCTETOS_MATH_INTEGER r)
+	Circle::Circle(const math::Vector<int>& c,int r) : Shape(c)
 	{
-		pointcenter = c;
 		radius = r;
 	}
 
 	//
-	const math::Point<int>& Circle::getCenter()const
+	const math::Vector<int>& Circle::getCenter()const
 	{
-		return pointcenter;
+		return origin;
 	}
-	OCTETOS_MATH_INTEGER Circle::getRadius()const
+	int Circle::getRadius()const
 	{
 		return radius;
 	}
@@ -238,15 +278,15 @@ namespace octetos::cobani
 	void Circle::draw(Screen& context)
 	{
 		SDL_Renderer * renderer = context.getRenderer();
-		OCTETOS_MATH_INTEGER centreX = context.convX(pointcenter[0]);
-		OCTETOS_MATH_INTEGER centreY = context.convX(pointcenter[1]);
+		int centreX = origin[0];
+		int centreY = origin[1];
 		//COBANI_TYPE_INTEGER radius = 30;
-		OCTETOS_MATH_INTEGER diameter = (radius * 2);
-	   	OCTETOS_MATH_INTEGER x = (radius - 1);
-	   	OCTETOS_MATH_INTEGER y = 0;
-	   	OCTETOS_MATH_INTEGER tx = 1;
-	   	OCTETOS_MATH_INTEGER ty = 1;
-	   	OCTETOS_MATH_INTEGER error = (tx - diameter);
+		int diameter = (radius * 2);
+	   	int x = (radius - 1);
+	   	int y = 0;
+	   	int tx = 1;
+	   	int ty = 1;
+	   	int error = (tx - diameter);
 
 	   	while (x >= y)
 		{
@@ -275,15 +315,15 @@ namespace octetos::cobani
 		  	}
 		}
 	}
-	void Circle::set(const math::Point<int>& c, OCTETOS_MATH_INTEGER r)
+	void Circle::set(const math::Vector<int>& c, int r)
 	{
-		pointcenter = c;
+		origin = c;
 		radius = r;
 	}
-	void Circle::move(const math::Vector<int>& v)
+	/*void Circle::move(const math::Vector<int>& v)
 	{
-		pointcenter.translate(v);
-	}
+		origin = v;
+	}*/
 
 
 
@@ -296,9 +336,9 @@ namespace octetos::cobani
 	{
 	
 	}
-	Line::Line(const math::Point<int>& o, const math::Point<int>& e)
+	Line::Line(const math::Point<int>& o, const math::Point<int>& e) : Shape(o)
 	{
-		origin = o;
+		//origin = o;
 		end = e;
 	}
 	//getter
@@ -333,6 +373,41 @@ namespace octetos::cobani
 		this->v2 = v2;
 		this->v3 = v3;
 	}
+
+
+
+
+
+
+
+
+
+
+	
+	//contructor
+	Camera::Camera()
+	{
+		
+	}
+	Camera::Camera(const SDL_Rect& r) : Rectangle(r)
+	{
+
+	}
+	Camera::Camera(int x, int y , int w, int h) : Rectangle(x,y,w,h)
+	{
+
+	}
+	Camera::Camera(const math::Point<int>& o, int w, int h) : Rectangle(o,w,h)
+	{
+
+	}
+	/**
+	*\brief Case espcial para el cuadrado
+	*/
+	Camera::Camera(const math::Point<int>& o, int w) : Rectangle(o,w)
+	{
+
+	}
 		
 
 
@@ -340,24 +415,27 @@ namespace octetos::cobani
 
 
 
-
+const int Screen::DEFAULT_WIDTH = 640;
+const int Screen::DEFAULT_HEIGHT = 480;
+		
 Screen::Screen()
 {
     init(SDL_INIT_EVERYTHING);
 	cleanBackgraund();
-	media();
+	camera = NULL;
 }
 Screen::Screen(Uint32 flags)
 {
     init(flags);
 	cleanBackgraund();
-	media();
+	camera = NULL;
 }
 Screen::~Screen()
 {
     SDL_DestroyWindow( window );
     SDL_DestroyRenderer( renderer );
     SDL_Quit();
+	if(camera) delete camera;
 }
 
 
@@ -385,7 +463,7 @@ void Screen::init(Uint32 flags)
 }
 void Screen::createScreen()
 {
-	window = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_SHOWN );
+	window = SDL_CreateWindow( "Vueva ventana", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, DEFAULT_WIDTH, DEFAULT_HEIGHT, SDL_WINDOW_SHOWN );
 	if(!window)
 	{
         throw core::Exception(__FILE__,__LINE__,"Creatign  winodows fail.");
@@ -395,6 +473,8 @@ void Screen::createScreen()
 	{
         throw core::Exception(__FILE__,__LINE__,"Creatign  redender fail.");
     }
+	SDL_Rect rect = {0,0,DEFAULT_WIDTH,DEFAULT_HEIGHT};
+	camera = new Camera(rect);
 }
 void Screen::cleanBackgraund(const Color& color)
 {
@@ -442,11 +522,11 @@ int Screen::convY(int v)
 void Screen::media()
 {
 	int w,h;
-	getWindowSize(w,h);
+	SDL_GetWindowSize(window,&w,&h);
 	mediaX = w/2;
 	mediaY = h/2;
-	std::cout << "mediaX = " << mediaX << "\n";
-	std::cout << "mediaY = " << mediaY << "\n";
+	//std::cout << "mediaX = " << mediaX << "\n";
+	//std::cout << "mediaY = " << mediaY << "\n";
 }
 
 }

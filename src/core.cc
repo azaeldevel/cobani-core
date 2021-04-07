@@ -1,6 +1,14 @@
 
 #include <iostream>
 
+// Include GLEW
+#include <GL/glew.h>
+
+// Include GLFW
+#include <GLFW/glfw3.h>
+GLFWwindow* window;
+
+
 
 #include "core.hh"
 
@@ -367,11 +375,8 @@ namespace octetos::cobani
 
 
 
-	Triangle::Triangle(const math::Point<int>& v1,const math::Point<int>& v2, const math::Point<int>& v3)
+	Triangle::Triangle(const math::Point<float>& v1,const math::Point<float>& v2, const math::Point<float>& v3) : math::shapes::Triangle<float>(v1,v2,v3)
 	{
-		this->v1 = v1;
-		this->v2 = v2;
-		this->v3 = v3;
 	}
 
 
@@ -528,5 +533,7 @@ void Screen::media()
 	//std::cout << "mediaX = " << mediaX << "\n";
 	//std::cout << "mediaY = " << mediaY << "\n";
 }
+
+
 
 }

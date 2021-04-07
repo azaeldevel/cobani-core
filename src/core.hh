@@ -13,6 +13,9 @@
 #include <octetos/math/Vector.hh>
 
 
+
+#include "shapes.hh"
+
 namespace octetos::cobani
 {
 class Screen;
@@ -168,15 +171,11 @@ public:
 };
 
 
-class Triangle
+class Triangle : public Shape, math::shapes::Triangle<float> 
 {
 public:
-	Triangle(const math::Point<int>& v1,const math::Point<int>& v2, const math::Point<int>& v3);
-
-private:
-	math::Point<int> v1;
-	math::Point<int> v2;
-	math::Point<int> v3;
+	Triangle(const math::Point<float>& v1,const math::Point<float>& v2, const math::Point<float>& v3);
+	
 };
 
 class Camera : public Rectangle
@@ -208,8 +207,6 @@ public:
 	//setter
 	
     //funciones
-#ifdef COBANI_DEBUG
-#endif
 	void init(Uint32 flags);
 	void cleanBackgraund(const Color& color = colors::white);
 	int setRenderDrawColor(const Color& color);
@@ -220,14 +217,13 @@ public:
 	int convX(int v);
 	int convY(int v);
 	void createScreen();
-
+	
 	//
 	static const int DEFAULT_WIDTH;
 	static const int DEFAULT_HEIGHT;
 	
 
 protected:
-
 	//funtions
 	void media();
 

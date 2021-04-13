@@ -98,7 +98,9 @@ namespace octetos::cobani
 	
 
 	Rectangle::Rectangle()
-	{}
+	{
+
+	}
 	Rectangle::Rectangle(int x, int y , int width, int height)
 	{
 		this->x = x;
@@ -142,9 +144,7 @@ namespace octetos::cobani
 	void Rectangle::center()
 	{		
 		x = x - w/2;
-#if COBANI_DIMENSION >= 2
 		y = y - h/2;
-#endif
 	}
 	void Rectangle::move(const math::Vector<int>& v)
 	{
